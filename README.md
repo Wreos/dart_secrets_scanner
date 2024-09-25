@@ -1,6 +1,6 @@
-# Dart Credentials Scanner
+# Dart secrets scanner
 
-`dart_credentials_scanner` is a command-line tool designed to scan Dart and related files in Flutter projects for hardcoded sensitive information such as API keys, tokens, passwords, and other credentials. 
+`dart_secrets_scanner` is a command-line tool designed to scan Dart and related files in Flutter projects for hardcoded sensitive information such as API keys, tokens, passwords, and other credentials. 
 The tool also supports excluding common non-sensitive variables and paths to avoid false positives.
 
 ## Features
@@ -17,7 +17,7 @@ Clone or add the package to your Dart or Flutter project:
 
 1. Add it to your Flutter project dependencies:
    ```yaml
-   dart_credentials_scanner: 1.0.0
+   dart_secrets_scanner: 1.0.3
 
 2. Get the package dependencies:
    ```bash
@@ -29,7 +29,7 @@ Clone or add the package to your Dart or Flutter project:
 To run the credentials scanner in your project directory, use:
 
 ```bash
-dart run dart_credentials_scanner
+dart run dart_secrets_scanner
 ```
 
 ### Example Output
