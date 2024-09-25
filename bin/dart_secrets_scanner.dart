@@ -16,7 +16,8 @@ Future<void> checkForSensitiveVariables() async {
       r'''(const|final|var)\s+([a-zA-Z0-9_]+)\s*=\s*["']([a-zA-Z0-9&@#%^*()_+!?<>-]{8,})["']''');
 
   // Ensure values contain both letters and digits
-  final alphanumericPattern = RegExp(r'(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z0-9&@#%^*()_+!?<>-]{8,}');
+  final alphanumericPattern =
+      RegExp(r'(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z0-9&@#%^*()_+!?<>-]{8,}');
 
   // Exclusion patterns for common non-sensitive variable names
   final variableNameExclusionPattern = RegExp(
@@ -30,7 +31,8 @@ Future<void> checkForSensitiveVariables() async {
 
   // Process each file for sensitive variable detection
   for (var file in projectFiles) {
-    await processFile(file, variableWithValuePattern, alphanumericPattern, variableNameExclusionPattern);
+    await processFile(file, variableWithValuePattern, alphanumericPattern,
+        variableNameExclusionPattern);
   }
 }
 
@@ -43,14 +45,16 @@ List<FileSystemEntity> getProjectFiles(List<String> supportedExtensions) {
         supportedExtensions.any((ext) => entity.path.endsWith(ext)) &&
         !entity.path.contains(RegExp(r'''(/|\\)test(/|\\)''')) &&
         !entity.path.endsWith('_test.dart') &&
-        !entity.path.contains(RegExp(r'''(/|\\)(example|android|ios|build)(/|\\)'''));
+        !entity.path
+            .contains(RegExp(r'''(/|\\)(example|android|ios|build)(/|\\)'''));
   }).toList();
 }
 
 /// Processes a single file to detect hardcoded sensitive variables.
 ///
 /// Prints any found sensitive variables along with their location.
-Future<void> processFile(FileSystemEntity file, RegExp variableWithValuePattern, RegExp alphanumericPattern, RegExp exclusionPattern) async {
+Future<void> processFile(FileSystemEntity file, RegExp variableWithValuePattern,
+    RegExp alphanumericPattern, RegExp exclusionPattern) async {
   try {
     final content = await File(file.path).readAsLines();
 
@@ -62,8 +66,10 @@ Future<void> processFile(FileSystemEntity file, RegExp variableWithValuePattern,
         final variableName = variableMatch.group(2);
         final variableValue = variableMatch.group(3);
 
-        if (!exclusionPattern.hasMatch(variableName!) && alphanumericPattern.hasMatch(variableValue!)) {
-          print('Found hardcoded variable: "$variableName" with value: "$variableValue" in ${file.path}:${lineNumber + 1}');
+        if (!exclusionPattern.hasMatch(variableName!) &&
+            alphanumericPattern.hasMatch(variableValue!)) {
+          print(
+              'Found hardcoded variable: "$variableName" with value: "$variableValue" in ${file.path}:${lineNumber + 1}');
         }
       }
     }
