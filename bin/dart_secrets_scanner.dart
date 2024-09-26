@@ -17,7 +17,7 @@ Future<void> checkForSensitiveVariables() async {
 
   // Ensure values contain both letters and digits
   final alphanumericPattern =
-  RegExp(r'(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z0-9&@#%^*()_+!?<>-]{8,}');
+      RegExp(r'(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z0-9&@#%^*()_+!?<>-]{8,}');
 
   // Exclusion patterns for common non-sensitive variable names
   final variableNameExclusionPattern = RegExp(
