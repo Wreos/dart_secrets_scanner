@@ -1,3 +1,7 @@
+## 1.0.5
+
+- Added more supported file formats
+
 ## 1.0.4
 
 - Added emoji to report

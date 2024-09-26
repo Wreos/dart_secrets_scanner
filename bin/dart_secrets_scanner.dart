@@ -24,7 +24,17 @@ Future<void> checkForSensitiveVariables() async {
       r'''(format|tokenizer|secretName|Id|android|Error$|passwordPolicy|token$|tokenPolicy|X-[\w-]+|[,\s#+*^|}{'"\[\]]|regex|name)''');
 
   // Supported file extensions in the project
-  final supportedFileExtensions = ['.dart', '.json', '.yaml', '.properties'];
+  final supportedFileExtensions = [
+    '.dart',
+    '.json',
+    '.yaml',
+    '.properties',
+    '.java',
+    '.kt',
+    '.swift',
+    '.gradle',
+    '.xml'
+  ];
 
   // Get project files based on the supported extensions
   final projectFiles = getProjectFiles(supportedFileExtensions);

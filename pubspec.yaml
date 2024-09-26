@@ -1,6 +1,6 @@
 name: dart_secrets_scanner
 description: command-line tool designed to scan Dart and related files in Flutter projects for hardcoded sensitive information such as API keys, tokens, passwords, and other credentials.
-version: 1.0.4
+version: 1.0.5
 homepage: https://github.com/Wreos/dart_secrets_scanner
 
 environment:
