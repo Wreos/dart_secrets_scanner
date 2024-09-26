@@ -1,3 +1,8 @@
+## 1.0.6
+
+- Improved checking rules
+- Added topics to package
+
 ## 1.0.5
 
 - Added more supported file formats

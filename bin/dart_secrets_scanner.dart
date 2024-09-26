@@ -11,13 +11,41 @@ Future<void> main(List<String> arguments) async {
 /// Scans through files with specific extensions, looking for hardcoded
 /// sensitive information based on defined patterns.
 Future<void> checkForSensitiveVariables() async {
-  // Pattern for sensitive variable names with values
-  final variableWithValuePattern = RegExp(
-      r'''(const|String|final|var)\s+([a-zA-Z0-9_]+)\s*=\s*["']([a-zA-Z0-9&@#%^*()_+!?<>-]{8,})["']''');
+  // Combined patterns for detecting sensitive variables and secrets
+  final patterns = [
+    // Pattern for sensitive variable names with values
+    RegExp(
+        r'''(const|String|final|var)\s+([a-zA-Z0-9_]+)\s*=\s*["']([A-Za-z0-9&@#%^*()_+!?<>-]{8,})["']'''),
+
+    // GitLab Personal Access Token
+    RegExp(r'''glpat-[0-9a-zA-Z_\-]{20}'''),
+
+    // GitHub Personal Access Token
+    RegExp(r'''ghp_[0-9a-zA-Z]{36}'''),
+
+    // GitHub OAuth Token
+    RegExp(r'''gho_[0-9a-zA-Z]{36}'''),
+
+    // GitHub App Token
+    RegExp(r'''(ghu|ghs)_[0-9a-zA-Z]{36}'''),
+
+    // AWS Access Token
+    RegExp(r'''AKIA[0-9A-Z]{16}'''),
+
+    // Stripe Live API Key
+    RegExp(r'''sk_live_[0-9a-zA-Z]{24}'''),
+
+    // Google API Key
+    RegExp(r'''AIza[0-9A-Za-z\\-_]{35}'''),
+
+    // URL with password
+    RegExp(
+        r'''[a-zA-Z]{3,10}://[^$][^:@\/\n]{3,20}:[^$][^:@\n\/]{3,40}@.{1,100}''')
+  ];
 
   // Ensure values contain both letters and digits
   final alphanumericPattern =
-      RegExp(r'(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z0-9&@#%^*()_+!?<>-]{8,}');
+      RegExp(r'(?=.*[a-zA-Z])(?=.*\d)[A-Za-z0-9&@#%^*()_+!?<>-]{8,}');
 
   // Exclusion patterns for common non-sensitive variable names
   final variableNameExclusionPattern = RegExp(
@@ -41,8 +69,8 @@ Future<void> checkForSensitiveVariables() async {
 
   // Process each file for sensitive variable detection
   for (var file in projectFiles) {
-    await processFile(file, variableWithValuePattern, alphanumericPattern,
-        variableNameExclusionPattern);
+    await processFile(
+        file, patterns, alphanumericPattern, variableNameExclusionPattern);
   }
 }
 
@@ -63,23 +91,36 @@ List<FileSystemEntity> getProjectFiles(List<String> supportedExtensions) {
 /// Processes a single file to detect hardcoded sensitive variables.
 ///
 /// Prints any found sensitive variables along with their location.
-Future<void> processFile(FileSystemEntity file, RegExp variableWithValuePattern,
+/// This includes variables defined in the code and secrets that match
+/// specific patterns.
+Future<void> processFile(FileSystemEntity file, List<RegExp> patterns,
     RegExp alphanumericPattern, RegExp exclusionPattern) async {
   try {
     final content = await File(file.path).readAsLines();
 
     for (int lineNumber = 0; lineNumber < content.length; lineNumber++) {
       final line = content[lineNumber];
-      final variableMatch = variableWithValuePattern.firstMatch(line);
 
-      if (variableMatch != null) {
-        final variableName = variableMatch.group(2);
-        final variableValue = variableMatch.group(3);
+      // Check for combined patterns
+      for (var pattern in patterns) {
+        final match = pattern.firstMatch(line);
 
-        if (!exclusionPattern.hasMatch(variableName!) &&
-            alphanumericPattern.hasMatch(variableValue!)) {
-          print(
-              '🔒 Found hardcoded variable: "$variableName" with value: "$variableValue" in ${file.path}:${lineNumber + 1}');
+        if (match != null) {
+          // Check if it's a variable match
+          if (pattern == patterns[0]) {
+            // Check for hardcoded variable
+            final variableName = match.group(2);
+            final variableValue = match.group(3);
+            if (!exclusionPattern.hasMatch(variableName!) &&
+                alphanumericPattern.hasMatch(variableValue!)) {
+              print(
+                  '🔒 Found hardcoded variable: "$variableName" with value: "$variableValue" in ${file.path}:${lineNumber + 1}');
+            }
+          } else {
+            // Check for secret patterns
+            print(
+                '🔒 Found sensitive data matching pattern in ${file.path}:${lineNumber + 1}');
+          }
         }
       }
     }
