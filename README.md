@@ -17,7 +17,7 @@ Clone or add the package to your Dart or Flutter project:
 
 1. Add it to your Flutter project dependencies:
    ```yaml
-   dart_secrets_scanner: 1.0.3
+   dart_secrets_scanner: 1.0.4
 
 2. Get the package dependencies:
    ```bash

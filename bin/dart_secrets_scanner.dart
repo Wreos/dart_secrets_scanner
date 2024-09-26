@@ -13,11 +13,11 @@ Future<void> main(List<String> arguments) async {
 Future<void> checkForSensitiveVariables() async {
   // Pattern for sensitive variable names with values
   final variableWithValuePattern = RegExp(
-      r'''(const|final|var)\s+([a-zA-Z0-9_]+)\s*=\s*["']([a-zA-Z0-9&@#%^*()_+!?<>-]{8,})["']''');
+      r'''(const|String|final|var)\s+([a-zA-Z0-9_]+)\s*=\s*["']([a-zA-Z0-9&@#%^*()_+!?<>-]{8,})["']''');
 
   // Ensure values contain both letters and digits
   final alphanumericPattern =
-      RegExp(r'(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z0-9&@#%^*()_+!?<>-]{8,}');
+  RegExp(r'(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z0-9&@#%^*()_+!?<>-]{8,}');
 
   // Exclusion patterns for common non-sensitive variable names
   final variableNameExclusionPattern = RegExp(
@@ -69,11 +69,11 @@ Future<void> processFile(FileSystemEntity file, RegExp variableWithValuePattern,
         if (!exclusionPattern.hasMatch(variableName!) &&
             alphanumericPattern.hasMatch(variableValue!)) {
           print(
-              'Found hardcoded variable: "$variableName" with value: "$variableValue" in ${file.path}:${lineNumber + 1}');
+              '🔒 Found hardcoded variable: "$variableName" with value: "$variableValue" in ${file.path}:${lineNumber + 1}');
         }
       }
     }
   } catch (e) {
-    print('Error reading file ${file.path}: $e');
+    print('⚠️ Error reading file ${file.path}: $e');
   }
 }
