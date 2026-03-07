@@ -1,3 +1,8 @@
+## 2.0.1
+
+- Fixed CLI compilation/analyzer failure by adding the missing `dart:io` import for `exit(1)`.
+- Fixed CI workflow validation by removing `secrets` usage from the job-level `if` expression and gating publish steps with a token check step.
+
 ## 2.0.0
 
 - Rebuilt the scanner around MASVS-aligned regex and contextual heuristics so config files and secrets get broader coverage.
