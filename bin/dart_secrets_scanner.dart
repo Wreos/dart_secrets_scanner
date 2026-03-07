@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:dart_secrets_scanner/dart_secrets_scanner.dart';
 
