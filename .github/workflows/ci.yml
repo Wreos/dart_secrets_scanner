@@ -21,7 +21,7 @@ jobs:
 
   publish:
     needs: validate
-    if: ${{ startsWith(github.ref, 'refs/tags/v') && secrets.PUB_TOKEN != '' }}
+    if: ${{ startsWith(github.ref, 'refs/tags/v') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -29,8 +29,22 @@ jobs:
         with:
           sdk: stable
       - run: dart pub get
-      - run: dart pub token add https://pub.dev --env-var PUB_TOKEN
+      - name: Check PUB_TOKEN availability
+        id: pub_token
+        run: |
+          if [ -n "${PUB_TOKEN}" ]; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "PUB_TOKEN is not set. Skipping publish steps."
+          fi
         env:
           PUB_TOKEN: ${{ secrets.PUB_TOKEN }}
-      - run: dart pub publish --dry-run
-      - run: dart pub publish --force
+      - if: ${{ steps.pub_token.outputs.available == 'true' }}
+        run: dart pub token add https://pub.dev --env-var PUB_TOKEN
+        env:
+          PUB_TOKEN: ${{ secrets.PUB_TOKEN }}
+      - if: ${{ steps.pub_token.outputs.available == 'true' }}
+        run: dart pub publish --dry-run
+      - if: ${{ steps.pub_token.outputs.available == 'true' }}
+        run: dart pub publish --force
