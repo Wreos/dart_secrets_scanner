@@ -16,6 +16,7 @@ Future<void> main(List<String> arguments) async {
 
   for (final result in results) {
     print('🔒 ${result.message} (${result.filePath}:${result.lineNumber})');
-    exit(1);
   }
+
+  exitCode = 1;
 }

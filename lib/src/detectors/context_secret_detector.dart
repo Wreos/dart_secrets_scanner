@@ -50,7 +50,7 @@ class ContextSecretDetector implements LineDetector {
     return ScanResult(
       filePath: target.filePath,
       lineNumber: target.lineNumber,
-      message: 'Found MASVS-relevant config key "$key" with hardcoded value: "$value"',
+      message: 'Found hardcoded value for MASVS-relevant config key "$key"',
     );
   }
 

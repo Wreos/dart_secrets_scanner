@@ -30,7 +30,10 @@ class ScannerConfig {
       if (document is YamlMap) {
         final scannerNode = document['scanner'];
         if (scannerNode is YamlMap) {
-          excludedNames = _readStringList(scannerNode, 'exclude_variable_names');
+          excludedNames = _readStringList(
+            scannerNode,
+            'exclude_variable_names',
+          );
           excludedPaths = _readStringList(scannerNode, 'exclude_paths');
           extraKeywords = _readStringList(scannerNode, 'context_keywords');
         }
@@ -45,13 +48,15 @@ class ScannerConfig {
   }
 
   static ScannerConfig defaults() => ScannerConfig._(
-        excludedVariablePatterns: _buildVariablePatterns(const []),
-        excludedPathPatterns: _buildPathPatterns(const []),
-        contextKeywords: _buildKeywordList(const []),
-      );
+    excludedVariablePatterns: _buildVariablePatterns(const []),
+    excludedPathPatterns: _buildPathPatterns(const []),
+    contextKeywords: _buildKeywordList(const []),
+  );
 
   bool matchesExcludedPath(String relativePath) {
-    return excludedPathPatterns.any((pattern) => pattern.hasMatch(relativePath));
+    return excludedPathPatterns.any(
+      (pattern) => pattern.hasMatch(relativePath),
+    );
   }
 
   bool matchesExcludedVariable(String name) {
@@ -60,8 +65,10 @@ class ScannerConfig {
 
   static List<RegExp> _buildVariablePatterns(List<String> extra) {
     final defaults = [
-      RegExp(r'^(format|tokenizer|secretName|passwordPolicy|tokenPolicy)$',
-          caseSensitive: false),
+      RegExp(
+        r'^(format|tokenizer|secretName|passwordPolicy|tokenPolicy)$',
+        caseSensitive: false,
+      ),
       RegExp(r'^(id|android|error)$', caseSensitive: false),
       RegExp(r'^X-[\w-]+$', caseSensitive: false),
       RegExp(r'name$', caseSensitive: false),
@@ -69,22 +76,28 @@ class ScannerConfig {
 
     final extras = extra
         .where((entry) => entry.trim().isNotEmpty)
-        .map((entry) =>
-            RegExp('^${RegExp.escape(entry.trim())}\$', caseSensitive: false));
+        .map(
+          (entry) =>
+              RegExp('^${RegExp.escape(entry.trim())}\$', caseSensitive: false),
+        );
 
     return [...defaults, ...extras];
   }
 
   static List<RegExp> _buildPathPatterns(List<String> extra) {
     final defaults = [
-      RegExp(r'(^|/|\\)(test|example|android|ios|build)($|/|\\)',
-          caseSensitive: false),
+      RegExp(
+        r'(^|/|\\)(test|example|android|ios|build)($|/|\\)',
+        caseSensitive: false,
+      ),
       RegExp(r'(^|/|\\)\.git($|/|\\)', caseSensitive: false),
     ];
 
     final extras = extra
         .where((entry) => entry.trim().isNotEmpty)
-        .map((entry) => RegExp(RegExp.escape(entry.trim()), caseSensitive: false));
+        .map(
+          (entry) => RegExp(RegExp.escape(entry.trim()), caseSensitive: false),
+        );
 
     return [...defaults, ...extras];
   }

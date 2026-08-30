@@ -21,24 +21,39 @@ void main() {
     await file.writeAsString(contents);
   }
 
-  test('scanner aggregates findings and applies default excluded paths', () async {
-    await writeFile('lib/secret.dart', 'const apiKey = "Abc12345";');
-    await writeFile('build/secret.dart', 'const apiKey = "Abc12345";');
-    await writeFile('config/app.json', '"client_secret": "Def12345"');
+  test(
+    'scanner aggregates findings and applies default excluded paths',
+    () async {
+      await writeFile('lib/secret.dart', 'const apiKey = "Abc12345";');
+      await writeFile('build/secret.dart', 'const apiKey = "Abc12345";');
+      await writeFile('config/app.json', '"client_secret": "Def12345"');
 
-    final config = await ScannerConfig.load(root: tempDir);
-    final scanner = Scanner(root: tempDir, config: config);
-    final results = await scanner.scan();
+      final config = await ScannerConfig.load(root: tempDir);
+      final scanner = Scanner(root: tempDir, config: config);
+      final results = await scanner.scan();
 
-    expect(results.where((result) => result.filePath.contains('build/')).isEmpty, isTrue);
-    expect(results.any((result) => result.filePath == 'lib/secret.dart'), isTrue);
-    expect(results.any((result) => result.filePath == 'config/app.json'), isTrue);
-  });
+      expect(
+        results.where((result) => result.filePath.contains('build/')).isEmpty,
+        isTrue,
+      );
+      expect(
+        results.any((result) => result.filePath == 'lib/secret.dart'),
+        isTrue,
+      );
+      expect(
+        results.any((result) => result.filePath == 'config/app.json'),
+        isTrue,
+      );
+    },
+  );
 
   test('scanner returns empty list when no supported files exist', () async {
     await writeFile('README.md', '# docs only');
 
-    final scanner = Scanner(root: tempDir, config: await ScannerConfig.load(root: tempDir));
+    final scanner = Scanner(
+      root: tempDir,
+      config: await ScannerConfig.load(root: tempDir),
+    );
     final results = await scanner.scan();
 
     expect(results, isEmpty);

@@ -53,6 +53,7 @@ void main() {
 
       expect(result, isNotNull);
       expect(result!.message, contains('apiKey'));
+      expect(result.message, isNot(contains('Abc12345')));
     });
 
     test('ignores excluded variable names', () {
@@ -84,6 +85,7 @@ void main() {
 
       expect(result, isNotNull);
       expect(result!.message, contains('MASVS-relevant config key'));
+      expect(result.message, isNot(contains('Abc12345')));
     });
 
     test('ignores non-context files', () {

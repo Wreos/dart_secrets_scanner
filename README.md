@@ -16,7 +16,7 @@
 
 1. Add the package to your Dart/Flutter project dependencies:
    ```yaml
-   dart_secrets_scanner: ^2.0.0
+   dart_secrets_scanner: ^2.0.2
    ```
 2. Fetch dependencies:
    ```bash
@@ -31,7 +31,9 @@ Run the scanner from your project root:
 dart run dart_secrets_scanner
 ```
 
-On success the CLI prints `✅ No hardcoded secrets were detected.`; when secrets are found each result shows the file and line context with a 🔒 emoji.
+On success the CLI prints `✅ No hardcoded secrets were detected.`; when secrets
+are found each result shows the file and line context with a 🔒 emoji. Secret
+values are never included in the output.
 
 ## Configuration
 

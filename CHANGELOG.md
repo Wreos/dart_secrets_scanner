@@ -1,3 +1,10 @@
+## 2.0.2
+
+- Redacted detected secret values from scanner output so they cannot leak into
+  terminal or CI logs.
+- Reported every finding before returning a non-zero exit code.
+- Added regression coverage for redacted output and multi-finding CLI behavior.
+
 ## 2.0.1
 
 - Fixed CLI compilation/analyzer failure by adding the missing `dart:io` import for `exit(1)`.

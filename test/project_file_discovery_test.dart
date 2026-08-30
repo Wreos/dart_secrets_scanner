@@ -10,7 +10,9 @@ void main() {
   late Directory tempDir;
 
   setUp(() async {
-    tempDir = await Directory.systemTemp.createTemp('project_file_discovery_test');
+    tempDir = await Directory.systemTemp.createTemp(
+      'project_file_discovery_test',
+    );
   });
 
   tearDown(() async {
@@ -32,8 +34,9 @@ void main() {
 
     final config = await ScannerConfig.load(root: tempDir);
     final files = ProjectFileDiscovery().discover(tempDir, config);
-    final relativePaths =
-        files.map((file) => path.relative(file.path, from: tempDir.path)).toSet();
+    final relativePaths = files
+        .map((file) => path.relative(file.path, from: tempDir.path))
+        .toSet();
 
     expect(relativePaths, contains('lib/main.dart'));
     expect(relativePaths, contains('lib/config.json'));
@@ -57,8 +60,9 @@ scanner:
 
     final config = await ScannerConfig.load(root: tempDir);
     final files = ProjectFileDiscovery().discover(tempDir, config);
-    final relativePaths =
-        files.map((file) => path.relative(file.path, from: tempDir.path)).toSet();
+    final relativePaths = files
+        .map((file) => path.relative(file.path, from: tempDir.path))
+        .toSet();
 
     expect(relativePaths, contains('lib/keep.dart'));
     expect(relativePaths, isNot(contains('lib/generated/skip.dart')));

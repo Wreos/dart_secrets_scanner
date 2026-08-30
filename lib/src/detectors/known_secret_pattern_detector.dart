@@ -4,8 +4,14 @@ import 'line_detector.dart';
 
 class KnownSecretPatternDetector implements LineDetector {
   static final List<_SecretPattern> _secretPatterns = [
-    _SecretPattern('GitLab Personal Access Token', RegExp(r'glpat-[0-9a-zA-Z_\-]{20}')),
-    _SecretPattern('GitHub Personal Access Token', RegExp(r'ghp_[0-9a-zA-Z]{36}')),
+    _SecretPattern(
+      'GitLab Personal Access Token',
+      RegExp(r'glpat-[0-9a-zA-Z_\-]{20}'),
+    ),
+    _SecretPattern(
+      'GitHub Personal Access Token',
+      RegExp(r'ghp_[0-9a-zA-Z]{36}'),
+    ),
     _SecretPattern('GitHub OAuth Token', RegExp(r'gho_[0-9a-zA-Z]{36}')),
     _SecretPattern('GitHub App Token', RegExp(r'(ghu|ghs)_[0-9a-zA-Z]{36}')),
     _SecretPattern('AWS Access Key', RegExp(r'AKIA[0-9A-Z]{16}')),

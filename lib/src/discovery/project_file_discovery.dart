@@ -28,19 +28,20 @@ class ProjectFileDiscovery {
         .listSync(recursive: true, followLinks: false)
         .whereType<File>()
         .where((file) {
-      final baseName = path.basename(file.path);
-      if (baseName == scannerConfigFileName ||
-          baseName.endsWith('.yaml.example')) {
-        return false;
-      }
+          final baseName = path.basename(file.path);
+          if (baseName == scannerConfigFileName ||
+              baseName.endsWith('.yaml.example')) {
+            return false;
+          }
 
-      final extension = path.extension(file.path).toLowerCase();
-      if (!supportedExtensions.contains(extension)) {
-        return false;
-      }
+          final extension = path.extension(file.path).toLowerCase();
+          if (!supportedExtensions.contains(extension)) {
+            return false;
+          }
 
-      final relativePath = path.relative(file.path, from: root.path);
-      return !config.matchesExcludedPath(relativePath);
-    }).toList();
+          final relativePath = path.relative(file.path, from: root.path);
+          return !config.matchesExcludedPath(relativePath);
+        })
+        .toList();
   }
 }

@@ -9,7 +9,9 @@ void main() {
   late Directory tempDir;
 
   setUp(() async {
-    tempDir = await Directory.systemTemp.createTemp('dart_secrets_scanner_test');
+    tempDir = await Directory.systemTemp.createTemp(
+      'dart_secrets_scanner_test',
+    );
   });
 
   tearDown(() async {
@@ -36,8 +38,14 @@ final regularValue = "hello";
 
     final results = await runScanner();
 
-    expect(results.any((result) =>
-        result.message.contains('apiKey') && result.message.contains('Abc123xyz')), isTrue);
+    expect(
+      results.any(
+        (result) =>
+            result.message.contains('apiKey') &&
+            !result.message.contains('Abc123xyz'),
+      ),
+      isTrue,
+    );
   });
 
   test('Respects excluded variable names from config', () async {
@@ -62,7 +70,12 @@ scanner:
 
     final results = await runScanner();
 
-    expect(results.any((result) => result.message.contains('MASVS-relevant config key')), isTrue);
+    expect(
+      results.any(
+        (result) => result.message.contains('MASVS-relevant config key'),
+      ),
+      isTrue,
+    );
   });
 
   test('Honors additional context keywords from config', () async {
@@ -75,6 +88,9 @@ scanner:
 
     final results = await runScanner();
 
-    expect(results.any((result) => result.message.contains('firebase_token')), isTrue);
+    expect(
+      results.any((result) => result.message.contains('firebase_token')),
+      isTrue,
+    );
   });
 }

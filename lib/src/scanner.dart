@@ -21,7 +21,8 @@ class Scanner {
       root: root ?? Directory.current,
       config: resolvedConfig,
       discovery: discovery ?? ProjectFileDiscovery(),
-      fileScanService: fileScanService ??
+      fileScanService:
+          fileScanService ??
           FileScanService([
             VariableSecretDetector(resolvedConfig),
             KnownSecretPatternDetector(),
@@ -35,8 +36,8 @@ class Scanner {
     required this.config,
     required ProjectFileDiscovery discovery,
     required FileScanService fileScanService,
-  })  : _discovery = discovery,
-        _fileScanService = fileScanService;
+  }) : _discovery = discovery,
+       _fileScanService = fileScanService;
 
   final Directory root;
   final ScannerConfig config;

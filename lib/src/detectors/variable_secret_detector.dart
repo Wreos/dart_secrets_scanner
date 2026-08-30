@@ -37,8 +37,7 @@ class VariableSecretDetector implements LineDetector {
     return ScanResult(
       filePath: target.filePath,
       lineNumber: target.lineNumber,
-      message:
-          'Found hardcoded variable: "$variableName" with value: "$variableValue"',
+      message: 'Found hardcoded value assigned to "$variableName"',
     );
   }
 }
