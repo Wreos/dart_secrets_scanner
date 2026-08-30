@@ -1,3 +1,16 @@
+## 2.1.0
+
+- Added native Android and iOS source/configuration scanning while retaining
+  focused exclusions for generated build artifacts.
+- Expanded provider and generic detection for modern GitHub, AWS, Stripe,
+  Slack, OpenAI, Anthropic, private-key, bearer-token, and database credential
+  formats.
+- Added `--root`, `--config`, `--format`, `--help`, and `--version` CLI options,
+  including machine-readable JSON output and explicit usage/error exit codes.
+- Added dartdoc for the public API and a runnable package example.
+- Consolidated validation into one CI workflow and adopted pub.dev's official
+  OIDC publishing workflow.
+
 ## 2.0.2
 
 - Redacted detected secret values from scanner output so they cannot leak into

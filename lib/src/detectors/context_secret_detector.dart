@@ -3,7 +3,9 @@ import '../models/scan_result.dart';
 import '../models/scan_target.dart';
 import 'line_detector.dart';
 
+/// Detects secret-like values assigned to sensitive keys in config files.
 class ContextSecretDetector implements LineDetector {
+  /// Creates a context detector using configured secret-key keywords.
   ContextSecretDetector(this._config);
 
   final ScannerConfig _config;
@@ -13,6 +15,8 @@ class ContextSecretDetector implements LineDetector {
     '.yaml',
     '.yml',
     '.env',
+    '.xcconfig',
+    '.properties',
     '.plist',
   };
 
@@ -54,6 +58,7 @@ class ContextSecretDetector implements LineDetector {
     );
   }
 
+  /// Whether [extension] belongs to a supported configuration format.
   static bool isContextExtension(String extension) {
     return _contextExtensions.contains(extension.toLowerCase());
   }

@@ -3,11 +3,18 @@ import 'dart:io';
 import 'package:path/path.dart' as path;
 import 'package:yaml/yaml.dart';
 
+/// Default configuration filename searched for in the scan root.
 const scannerConfigFileName = 'dart_secrets_scanner.yaml';
 
+/// Controls path exclusions, variable exclusions, and contextual keywords.
 class ScannerConfig {
+  /// Regular expressions for variable names that should not produce findings.
   final List<RegExp> excludedVariablePatterns;
+
+  /// Regular expressions for relative paths that should not be scanned.
   final List<RegExp> excludedPathPatterns;
+
+  /// Lowercase key fragments treated as secret-related in config files.
   final List<String> contextKeywords;
 
   ScannerConfig._({
@@ -16,16 +23,20 @@ class ScannerConfig {
     required this.contextKeywords,
   });
 
-  static Future<ScannerConfig> load({Directory? root}) async {
+  /// Loads configuration from [configFile] or from the default file in [root].
+  ///
+  /// Missing configuration files are allowed and produce the default config.
+  static Future<ScannerConfig> load({Directory? root, File? configFile}) async {
     final projectRoot = root ?? Directory.current;
-    final configFile = File(path.join(projectRoot.path, scannerConfigFileName));
+    final resolvedConfigFile =
+        configFile ?? File(path.join(projectRoot.path, scannerConfigFileName));
 
     List<String> excludedNames = [];
     List<String> excludedPaths = [];
     List<String> extraKeywords = [];
 
-    if (await configFile.exists()) {
-      final contents = await configFile.readAsString();
+    if (await resolvedConfigFile.exists()) {
+      final contents = await resolvedConfigFile.readAsString();
       final document = loadYaml(contents);
       if (document is YamlMap) {
         final scannerNode = document['scanner'];
@@ -47,18 +58,21 @@ class ScannerConfig {
     );
   }
 
+  /// Creates a configuration containing only built-in defaults.
   static ScannerConfig defaults() => ScannerConfig._(
     excludedVariablePatterns: _buildVariablePatterns(const []),
     excludedPathPatterns: _buildPathPatterns(const []),
     contextKeywords: _buildKeywordList(const []),
   );
 
+  /// Whether [relativePath] matches a configured or built-in exclusion.
   bool matchesExcludedPath(String relativePath) {
     return excludedPathPatterns.any(
       (pattern) => pattern.hasMatch(relativePath),
     );
   }
 
+  /// Whether the variable [name] is explicitly excluded from detection.
   bool matchesExcludedVariable(String name) {
     return excludedVariablePatterns.any((pattern) => pattern.hasMatch(name));
   }
@@ -87,10 +101,13 @@ class ScannerConfig {
   static List<RegExp> _buildPathPatterns(List<String> extra) {
     final defaults = [
       RegExp(
-        r'(^|/|\\)(test|example|android|ios|build)($|/|\\)',
+        r'(^|/|\\)(test|example|build|\.dart_tool|\.git)($|/|\\)',
         caseSensitive: false,
       ),
-      RegExp(r'(^|/|\\)\.git($|/|\\)', caseSensitive: false),
+      RegExp(
+        r'(^|/|\\)(\.gradle|Pods|DerivedData|\.symlinks|ephemeral)($|/|\\)',
+        caseSensitive: false,
+      ),
     ];
 
     final extras = extra

@@ -7,16 +7,24 @@ import '../detectors/line_detector.dart';
 import '../models/scan_result.dart';
 import '../models/scan_target.dart';
 
+/// Reads files line by line and applies an ordered detector chain.
 class FileScanService {
+  /// Creates a service that applies [_detectors] in order.
   FileScanService(this._detectors);
 
   final List<LineDetector> _detectors;
 
+  /// Scans [file] and returns all findings relative to [root].
   Future<List<ScanResult>> scanFile(File file, Directory root) async {
     final lines = await file.readAsLines();
     final relativePath = path.relative(file.path, from: root.path);
+    final baseName = path.basename(file.path).toLowerCase();
     final extension = path.extension(file.path).toLowerCase();
-    final isContextFile = ContextSecretDetector.isContextExtension(extension);
+    final isEnvironmentFile =
+        baseName == '.env' || baseName.startsWith('.env.');
+    final isContextFile =
+        isEnvironmentFile ||
+        ContextSecretDetector.isContextExtension(extension);
 
     final results = <ScanResult>[];
 

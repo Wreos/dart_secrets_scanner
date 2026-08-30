@@ -3,7 +3,9 @@ import '../models/scan_result.dart';
 import '../models/scan_target.dart';
 import 'line_detector.dart';
 
+/// Detects secret-like values assigned directly to source variables.
 class VariableSecretDetector implements LineDetector {
+  /// Creates a variable detector using configured variable exclusions.
   VariableSecretDetector(this._config);
 
   final ScannerConfig _config;

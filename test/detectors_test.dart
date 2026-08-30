@@ -10,19 +10,47 @@ void main() {
   group('KnownSecretPatternDetector', () {
     final detector = KnownSecretPatternDetector();
 
-    test('detects a known GitHub token pattern', () {
-      final result = detector.detect(
-        const ScanTarget(
-          filePath: 'lib/a.dart',
-          lineNumber: 1,
-          line: 'const token = "ghp_123456789012345678901234567890123456";',
-          isContextFile: false,
-        ),
-      );
+    final knownSecrets = <({String label, String secret})>[
+      (
+        label: 'GitHub fine-grained Personal Access Token',
+        secret: 'github_pat_1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+      ),
+      (
+        label: 'GitHub token',
+        secret: 'ghp_123456789012345678901234567890123456',
+      ),
+      (label: 'AWS Access Key', secret: 'ASIA1234567890ABCDEF'),
+      (label: 'Stripe live API key', secret: 'rk_live_1234567890ABCDEF'),
+      (label: 'Slack token', secret: 'xoxb-1234567890-ABCDEFGHIJ'),
+      (label: 'Anthropic API key', secret: 'sk-ant-1234567890ABCDEFGHIJ'),
+      (label: 'OpenAI API key', secret: 'sk-proj-1234567890ABCDEFGHIJ'),
+      (label: 'private key', secret: '-----BEGIN OPENSSH PRIVATE KEY-----'),
+      (
+        label: 'Bearer authorization token',
+        secret: 'Authorization: Bearer abcdefghij1234567890',
+      ),
+      (
+        label: 'database URL with embedded credentials',
+        secret: 'postgresql://admin:password123@database.example/app',
+      ),
+    ];
 
-      expect(result, isNotNull);
-      expect(result!.message, contains('GitHub Personal Access Token'));
-    });
+    for (final fixture in knownSecrets) {
+      test('detects and redacts ${fixture.label}', () {
+        final result = detector.detect(
+          ScanTarget(
+            filePath: 'lib/a.dart',
+            lineNumber: 1,
+            line: fixture.secret,
+            isContextFile: false,
+          ),
+        );
+
+        expect(result, isNotNull);
+        expect(result!.message, contains(fixture.label));
+        expect(result.message, isNot(contains(fixture.secret)));
+      });
+    }
 
     test('ignores lines without known patterns', () {
       final result = detector.detect(

@@ -4,7 +4,9 @@ import 'package:path/path.dart' as path;
 
 import '../config/scanner_config.dart';
 
+/// Discovers supported source and configuration files beneath a project root.
 class ProjectFileDiscovery {
+  /// Extensions inspected by the scanner.
   static final Set<String> supportedExtensions = {
     '.dart',
     '.json',
@@ -15,14 +17,21 @@ class ProjectFileDiscovery {
     '.kt',
     '.swift',
     '.gradle',
+    '.kts',
     '.xml',
-    '.env',
     '.plist',
+    '.xcconfig',
+    '.entitlements',
+    '.pbxproj',
+    '.toml',
+    '.ini',
+    '.conf',
     '.sh',
     '.ps1',
     '.txt',
   };
 
+  /// Returns supported files beneath [root] after applying [config] exclusions.
   List<File> discover(Directory root, ScannerConfig config) {
     return root
         .listSync(recursive: true, followLinks: false)
@@ -35,7 +44,9 @@ class ProjectFileDiscovery {
           }
 
           final extension = path.extension(file.path).toLowerCase();
-          if (!supportedExtensions.contains(extension)) {
+          final isEnvironmentFile =
+              baseName == '.env' || baseName.startsWith('.env.');
+          if (!isEnvironmentFile && !supportedExtensions.contains(extension)) {
             return false;
           }
 

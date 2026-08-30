@@ -28,7 +28,14 @@ void main() {
   test('discovers supported files and applies default exclusions', () async {
     await writeFile('lib/main.dart');
     await writeFile('lib/config.json');
+    await writeFile('android/app/src/main/res/values/secrets.xml');
+    await writeFile('android/app/build.gradle.kts');
+    await writeFile('ios/Runner/Config.xcconfig');
+    await writeFile('ios/Runner/App.entitlements');
+    await writeFile('.env.local');
     await writeFile('build/generated.dart');
+    await writeFile('android/.gradle/cache.properties');
+    await writeFile('ios/Pods/Library/config.xcconfig');
     await writeFile('test/sample.dart');
     await writeFile('notes.md');
 
@@ -40,7 +47,17 @@ void main() {
 
     expect(relativePaths, contains('lib/main.dart'));
     expect(relativePaths, contains('lib/config.json'));
+    expect(
+      relativePaths,
+      contains('android/app/src/main/res/values/secrets.xml'),
+    );
+    expect(relativePaths, contains('android/app/build.gradle.kts'));
+    expect(relativePaths, contains('ios/Runner/Config.xcconfig'));
+    expect(relativePaths, contains('ios/Runner/App.entitlements'));
+    expect(relativePaths, contains('.env.local'));
     expect(relativePaths, isNot(contains('build/generated.dart')));
+    expect(relativePaths, isNot(contains('android/.gradle/cache.properties')));
+    expect(relativePaths, isNot(contains('ios/Pods/Library/config.xcconfig')));
     expect(relativePaths, isNot(contains('test/sample.dart')));
     expect(relativePaths, isNot(contains('notes.md')));
   });

@@ -1,22 +1,8 @@
-import 'dart:async';
 import 'dart:io';
 
-import 'package:dart_secrets_scanner/dart_secrets_scanner.dart';
+import 'package:dart_secrets_scanner/src/cli/cli_runner.dart';
 
-/// Main entry point of the CLI.
+/// Runs the dart_secrets_scanner command-line application.
 Future<void> main(List<String> arguments) async {
-  final config = await ScannerConfig.load();
-  final scanner = Scanner(config: config);
-  final results = await scanner.scan();
-
-  if (results.isEmpty) {
-    print('✅ No hardcoded secrets were detected.');
-    return;
-  }
-
-  for (final result in results) {
-    print('🔒 ${result.message} (${result.filePath}:${result.lineNumber})');
-  }
-
-  exitCode = 1;
+  exitCode = await runCli(arguments);
 }

@@ -9,7 +9,9 @@ import 'discovery/project_file_discovery.dart';
 import 'models/scan_result.dart';
 import 'services/file_scan_service.dart';
 
+/// Scans a Dart or Flutter project for hardcoded secrets.
 class Scanner {
+  /// Creates a scanner rooted at [root] with optional injectable services.
   factory Scanner({
     Directory? root,
     ScannerConfig? config,
@@ -39,11 +41,15 @@ class Scanner {
   }) : _discovery = discovery,
        _fileScanService = fileScanService;
 
+  /// Root directory whose supported source and configuration files are scanned.
   final Directory root;
+
+  /// Configuration applied during file discovery and detection.
   final ScannerConfig config;
   final ProjectFileDiscovery _discovery;
   final FileScanService _fileScanService;
 
+  /// Returns all findings in supported files beneath [root].
   Future<List<ScanResult>> scan() async {
     final files = _discovery.discover(root, config);
     final results = <ScanResult>[];
